@@ -91,7 +91,27 @@ Resources:
             Method: get
             RestApiId:
               Ref: BooksApi
-  
+
+  # 🔥 Added Missing CloudWatch Alarm
+  GetAllBooksAliasErrorMetricGreaterThanZeroAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "${AWS::StackName}-GetAllBooksAliasErrorMetricGreaterThanZero"
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+        - !Ref SomeSNSArn
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref GetAllBooks
+        - Name: Resource
+          Value: !Sub "${GetAllBooks}:Live"
+
   CreateBook:
     Type: AWS::Serverless::Function
     Properties:
@@ -127,3 +147,23 @@ Resources:
                   - !Ref 'AWS::NoValue'
                   - aws.cognito.signin.user.admin
               Authorizer: CognitoAuth
+
+  # 🔥 Added Missing CloudWatch Alarm for CreateBook
+  CreateBookAliasErrorMetricGreaterThanZeroAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "${AWS::StackName}-CreateBookAliasErrorMetricGreaterThanZero"
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+        - !Ref SomeSNSArn
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref CreateBook
+        - Name: Resource
+          Value: !Sub "${CreateBook}:Live"
