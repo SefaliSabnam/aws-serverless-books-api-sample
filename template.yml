@@ -11,6 +11,9 @@ Parameters:
     AllowedValues:
       - staging
       - production
+  BooksTable:
+    Type: String
+    Default: books-table
 
 Conditions:
   IsProduction: !Equals [ !Ref Stage, production ]
@@ -28,6 +31,17 @@ Globals:
       environment: !Ref Stage
 
 Resources:
+  BooksTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref BooksTable
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
 
   ApiGwAccountConfig:
     Type: "AWS::ApiGateway::Account"
@@ -56,8 +70,8 @@ Resources:
       StageName: !Ref Stage
       MethodSettings:
         - LoggingLevel: INFO
-          ResourcePath: '/*' # allows for logging on any resource
-          HttpMethod: '*' # allows for logging on any method
+          ResourcePath: '/*'
+          HttpMethod: '*'
       TracingEnabled: true
       Variables:
         LAMBDA_ALIAS: !Ref Stage
@@ -92,7 +106,6 @@ Resources:
             RestApiId:
               Ref: BooksApi
 
-  # 🔥 Added Missing CloudWatch Alarm
   GetAllBooksAliasErrorMetricGreaterThanZeroAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -148,7 +161,6 @@ Resources:
                   - aws.cognito.signin.user.admin
               Authorizer: CognitoAuth
 
-  # 🔥 Added Missing CloudWatch Alarm for CreateBook
   CreateBookAliasErrorMetricGreaterThanZeroAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
