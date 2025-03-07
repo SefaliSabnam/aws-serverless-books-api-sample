@@ -1,0 +1,16 @@
+{
+  "name": "aws-serverless-books-api-sample",
+  "version": "1.0.0",
+  "description": "This repository contains a Books API powered by Amazon API Gateway, AWS Lambda and Amazon DynamoDB. Involved resources are defined and provisioned using AWS SAM.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "express": "^4.21.2"
+  }
+}
